@@ -1,847 +1,99 @@
---Requires a Piano sample 
-print("PianoMode")
-	local ScreenGui = Instance.new("ScreenGui")
-	ScreenGui.Parent = game.Players.LocalPlayer.PlayerGui
-	local Frame = Instance.new("Frame")
-	Frame.Parent = ScreenGui
-	Frame.Size = UDim2.new(0.8, 0,0.19, 0) -- adjust the size as you like
-	Frame.Position = UDim2.new(0.087, 0,0.78, 0) -- adjust the position as you like
-	Frame.BackgroundColor3 = Color3.new(0.5, 0.5, 0.5) -- adjust the color as you like
-	Frame.Name = "Piano" -- name the frame
-	local KeyIndex=1
-	local KeyIndex2=1
-	local KeyIndex3=1
-	local TimeSignature = 3/8 -- three eighth notes per measure
-	-- Define a variable to store the tempo in beats per minute (BPM)
-	local Tempo = 90 -- adjust as you like
-	-- Define a variable to store the duration of one beat in seconds
-	local BeatDuration = 20 / Tempo
-	-- Define a variable to store the duration of one measure in seconds
-	local MeasureDuration = BeatDuration * TimeSignature
-	-- Define a variable to store the current time in seconds
-	local CurrentTime = 0
-	local KeyCount = 56 -- the number of keys on the piano
-	local KeyWidth = 21/12 / KeyCount -- the width of each key relative to the frame width
-	local KeyColors = {Color3.new(1, 1, 1), Color3.new(0, 0, 0)} -- the colors of the keys (white and black)
-	local KeyPattern = {1, 2, 1, 2, 1, 1, 2, 1, 2, 1, 2, 1} -- the pattern of the keys (white and black)
-	local KeyIndex = 1 -- the index of the current key in the pattern
-	-- the pitch multiplier for each semitone
-	local zindexc=1
-	-- Define the base pitch and the pitch step variables
-	local BasePitch = .1 -- the base pitch of the piano (adjust as you like)
-	local PitchStep = math.pow(2,1/12) -- the pitch multiplier for each semitone
-	print(PitchStep)
-	-- Loop through the sheet music and play each note one by one
-	local SheetMusic = {
-		-- Each entry is a table with multiple tables representing each finger: each with two values: the  note number and the note length.
-		-- The note number is the index of the NoteMap table, which corresponds to a key on the piano
-		-- The note length is a fraction of a whole note, such as 1/4 for a quarter note or 1/8 for an eighth note
-		--Example: 1 Here is an example of 10 fingers on the keyboard. at one time.
-		{{10, 1/8},{13, 1/16},{14, 1/16},{2, 1/8},{43, 1/16},{44, 1/8},{43, 1/16},{44, 1/16},{40, 1/8},{42, 1/16}}, 
-		--Example: 2 Here is an example of 1 fingers on the keyboard. at one time.
-		{{10, 1/8}},
-		--Example: 3 Here is an example of a rest for one whole note.
-		{{0, 1}},
-		--This runs at a maximum of 1/32. this is the minimum time between each section. 
-		{{10, 1/32}},
-		-- And so on for the rest of the piece...
-	}
-	local NoteMap = {
-		[1] = "A0",
-		[2] = "A#0/Bb0",
-		[3] = "B0",
-		[4] = "C1",
-		[5] = "C#1/Db1",
-		[6] = "D1",
-		[7] = "D#1/Eb1",
-		[8] = "E1",
-		[9] = "F1",
-		[10] = "F#1/Gb1",
-		[11] = "G1",
-		[12] = "G#1/Ab1",
-		[13] = "A1",
-		[14] = "A#1/Bb1",
-		[15] = "B1",
-		[16] = "C2",
-		[17] = "C#2/Db2",
-		[18] = "D2",
-		[19] = "D#2/Eb2",
-		[20] = "E2",
-		[21] = "F2",
-		[22] = "F#2/Gb2",
-		[23] = "G2",
-		[24] = "G#2/Ab2",
-		[25] = "A2",
-		[26] = "A#2/Bb2",
-		[27] = "B2",
-		[28] = "C3",
-		[29] = "C#3/Db3",
-		[30] = "D3",
-		[31] = "D#3/Eb3",
-		[32] = "E3",
-		[33] = "F3",
-		[34] = "F#3/Gb3",
-		[35] = "G3",
-		[36] = "G#3/Ab3",
-		[37] = "A3",
-		[38] = "A#3/Bb3",
-		[39] = "B3",
-		[40] = "C4", -- middle C
-		[41] = "C#4/Db4",
-		[42] = "D4",
-		[43] = "D#4/Eb4",
-		[44] = "E4",
-		[45] = "F4",
-		[46] = "F#4/Gb4",
-		[47] = "G4",
-		[48] = "G#4/Ab4",
-		[49] = "A4", -- 440 Hz
-		[50] = "A#4/Bb4",
-		[51] = "B4",
-		[52] = "C5",
-		[53] = "C#5/Db5",
-		[54] = "D5",
-		[55] = "D#5/Eb5",
-		[56] = "E5"
-	}
-	--Jingle bells
-	local Beat = {
-		-- Fur Elise by Ludwig van Beethoven
-		-- Tempo: 120 bpm
-		-- Time signature: 3/8
-		-- Key signature: A minor
-		-- Each entry is a table with multiple tables representing each finger: each with two values: the note number and the note length.
-		-- The note number is the index of the NoteMap table, which corresponds to a key on the piano
-		-- The note length is a fraction of a whole note, such as 1/4 for a quarter note or 1/8 for an eighth note
-		-- Example: {{10, 1/8},{13, 1/16},{14, 1/16},{2, 1/8},{43, 1/16},{44, 1/8},{43, 1/16},{44, 1/16},{40, 1/8},{42, 1/16}}
+-- Configuration de l'interface du piano
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Parent = game.Players.LocalPlayer.PlayerGui
+local Frame = Instance.new("Frame")
+Frame.Parent = ScreenGui
+Frame.Size = UDim2.new(0.8, 0, 0.19, 0) -- Ajustez la taille comme vous le souhaitez
+Frame.Position = UDim2.new(0.1, 0, 0.78, 0) -- Ajustez la position comme vous le souhaitez
+Frame.BackgroundColor3 = Color3.new(0.5, 0.5, 0.5) -- Ajustez la couleur comme vous le souhaitez
+Frame.Name = "Piano" -- Nom du cadre
 
-		-- Measure 1: Right hand plays E5 (56) for an eighth note, then D#5 (55) for an eighth note, then E5 (56) for an eighth note
-		{{56, 1/8}, {55, 1/8}, {56, 1/8}},
+-- Variables pour les clés
+local KeyCount = 56 -- Nombre de touches sur le piano
+local KeyWidth = 21 / 12 / KeyCount -- Largeur de chaque touche relative à la largeur du cadre
+local KeyColors = {Color3.new(1, 1, 1), Color3.new(0, 0, 0)} -- Couleurs des touches (blanches et noires)
+local KeyPattern = {1, 2, 1, 2, 1, 1, 2, 1, 2, 1, 2, 1} -- Motif des touches (blanches et noires)
 
-		-- Measure 2: Right hand plays B4 (51) for an eighth note, then D5 (54) for an eighth note, then C5 (52) for an eighth note
-		{{51, 1/8}, {54, 1/8}, {52, 1/8}},
+-- Fonction pour jouer le son
+local function PlaySound(input)
+    spawn(function()	
+        local Key = input.Name -- Nom de la touche
+        local Sound = input:FindFirstChild("Sound"):Clone()
+        Sound.Parent = input
 
-		-- Measure 3: Right hand plays A4 (49) for a quarter note (two eighth notes), then E4 (44) for an eighth note
-		{{49, 2/8}, {44, 1/8}},
-
-		-- Measure 4: Right hand plays A4 (49) for a quarter note (two eighth notes), then B4 (51) for an eighth note
-		{{49, 2/8}, {51, 1/8}},
-
-		-- Measure 5: Right hand plays C5 (52) for an eighth note, then B4 (51) for an eighth note, then A4 (49) for an eighth note
-		{{52, 1/8}, {51, 1/8}, {49, 1/8}},
-
-		-- And so on for the rest of the piece...
-	}
-	local FurElise = {
-		-- Fur Elise by Ludwig van Beethoven
-		-- Tempo: 120 bpm
-		-- Time signature: 3/8
-		-- Key signature: A minor
-		-- Each entry is a table with multiple tables representing each finger: each with two values: the note number and the note length.
-		-- The note number is the index of the NoteMap table, which corresponds to a key on the piano
-		-- The note length is a fraction of a whole note, such as 1/4 for a quarter note or 1/8 for an eighth note
-		-- Example: {{10, 1/8},{13, 1/16},{14, 1/16},{2, 1/8},{41, 1/16},{44, 1/8},{43, 1/16},{44, 1/16},{40, 1/8},{42, 1/16}}
-
-		-- Measure 1: Right hand plays E5 (56) for an eighth note, left hand plays A2 (25) for an eighth note
-		{{56, 1/8}, {25, 1/8}},
-
-		-- Measure 2: Right hand plays D#5 (55) for an eighth note, left hand plays E2 (20) for an eighth note
-		{{55, 1/8}, {20, 1/8}},
-
-		-- Measure 3: Right hand plays E5 (56) for an eighth note, left hand plays E2 (20) for an eighth note
-		{{56, 1/8}, {20, 1/8}},
-
-		-- Measure 4: Right hand plays B4 (51) for an eighth note, left hand plays A2 (25) for an eighth note
-		{{51, 1/8}, {25, 1/8}},
-
-		-- Measure 5: Right hand plays D5 (54) for an eighth note, left hand plays C3 (28) for an eighth note
-		{{54, 1/8}, {28, 1/8}},
-
-		-- Measure 6: Right hand plays C5 (52) for an eighth note, left hand plays E2 (20) for an eighth note
-		{{52, 1/8}, {20, 1/8}},
-
-		-- Measure 7: Right hand plays A4 (49) for a quarter note (two eighth notes), left hand plays A2 (25) for a quarter note (two eighth notes)
-		{{49, 2/8}, {25, 2/8}},
-
-		-- Measure 8: Right hand plays E4 (44) for an eighth note
-		{{44, 1/8}},
-		-- Measure 9: Right hand plays A4 (49) for a quarter note (two eighth notes), left hand plays A2 (25) for a quarter note (two eighth notes)
-		{{49, 2/8}, {25, 2/8}},
-
-		-- Measure 10: Right hand plays B4 (51) for an eighth note
-		{{51, 1/8}},
-
-		-- Measure 11: Right hand plays C5 (52) for an eighth note
-		{{52, 1/8}},
-
-		-- Measure 12: Right hand plays B4 (51) for an eighth note
-		{{51, 1/8}},
-
-		-- Measure 13: Right hand plays A4 (49) for an eighth note
-		{{49, 1/8}},
-
-		-- Measure 14: Right hand plays E5 (56) for an eighth note
-		{{56, 1/8}},
-
-		-- Measure 15: Right hand plays D#5 (55) for an eighth note
-		{{55, 1/8}},
-
-		-- Measure 16: Right hand plays E5 (56) for an eighth note
-		{{56, 1/8}},
-
-		-- Measure 17: Right hand plays B4 (51) for an eighth note
-		{{51, 1/8}},
-
-		-- Measure 18: Right hand plays D5 (54) for an eighth note
-		{{54, 1/8}},
-
-		-- Measure 19: Right hand plays C5 (52) for an eighth note
-		{{52, 1/8}},
-
-		-- Measure 20: Right hand plays A4 (49) for a quarter note (two eighth notes), left hand plays A2 (25) for a quarter note (two eighth notes)
-		{{49, 2/8}, {25, 2/8}},
-		-- Measure 21: Right hand plays E4 (44) for an eighth note
-		{{44, 1/8}},
-
-		-- Measure 22: Right hand plays A4 (49) for a quarter note (two eighth notes), left hand plays A2 (25) for a quarter note (two eighth notes)
-		{{49, 2/8}, {25, 2/8}},
-
-		-- Measure 23: Right hand plays B4 (51) for an eighth note
-		{{51, 1/8}},
-
-		-- Measure 24: Right hand plays C5 (52) for an eighth note
-		{{52, 1/8}},
-
-		-- Measure 25: Right hand plays B4 (51) for an eighth note
-		{{51, 1/8}},
-
-		-- Measure 26: Right hand plays A4 (49) for an eighth note
-		{{49, 1/8}},
-
-		-- Measure 27: Right hand plays E5 (56) for an eighth note
-		{{56, 1/8}},
-
-		-- Measure 28: Right hand plays D#5 (55) for an eighth note
-		{{55, 1/8}},
-
-		-- Measure 29: Right hand plays E5 (56) for an eighth note
-		{{56, 1/8}},
-
-		-- Measure 30: Right hand plays B4 (51) for an eighth note
-		{{51, 1/8}},
-
-		-- Measure 31: Right hand plays D5 (54) for an eighth note
-		{{54, 1/8}},
-
-		-- Measure 32: Right hand plays C5 (52) for an eighth note
-		{{52, 1/8}},
-
-		-- And so on for the rest of the piece...
-		-- And so on for the rest of the piece...
-	}
-	local JingleBells = {
-		-- Each entry is a table with two values: the note number and the note length
-		-- The note number is the index of the NoteMap table, which corresponds to a key on the piano
-		-- The note length is a fraction of a whole note, such as 1/4 for a quarter note or 1/8 for an eighth note
-		{40, 1/4}, -- C4 quarter note
-		{40, 1/4}, -- C4 quarter note
-		{40, 1/2}, -- C4 half note
-		{40, 1/4}, -- C4 quarter note
-		{40, 1/4}, -- C4 quarter note
-		{40, 1/2}, -- C4 half note
-		{40, 1/4}, -- C4 quarter note
-		{42, 1/4}, -- D4 quarter note
-		{44, 1/4}, -- E4 quarter note
-		{39, 1/4}, -- B3 quarter note
-		{39, 1/8}, -- B3 eighth note
-		{39, 1/8}, -- B3 eighth note
-		{40, 1/4}, -- C4 quarter note
-		{42, 1/8}, -- D4 eighth note
-		{42, 1/8}, -- D4 eighth note
-		{40, 1/2}, -- C4 half note	
-		{44, 1/8}, -- E4 eighth note
-		{44, 1/8}, -- E4 eighth note
-		{44, 3/16}, -- E4 dotted eighth note
-		{44, 1/16}, -- E4 sixteenth note
-		{44, 1/8}, -- E4 eighth note
-		{42, 1/8}, -- D4 eighth note
-		{42, 3/16}, -- D4 dotted eighth note
-		{42, 1/16}, -- D4 sixteenth note
-		{42, 1/8}, -- D4 eighth note
-		{40, 1/2} -- C4 half note	
-	}
-	local TwinkleLittleStar = {
-		-- Each entry is a table with two values: the note number and the note length
-		-- The note number is the index of the NoteMap table, which corresponds to a key on the piano
-		-- The note length is a fraction of a whole note, such as 1/4 for a quarter note or 1/8 for an eighth note
-		{44, 1/4}, -- E4 quarter note
-		{44, 1/4}, -- E4 quarter note
-		{47, 1/4}, -- G4 quarter note
-		{47, 1/4}, -- G4 quarter note
-		{49, 1/4}, -- A4 quarter note
-		{49, 1/4}, -- A4 quarter note
-		{47, 1/2}, -- G4 half note
-		{46, 1/4}, -- F#4/Gb4 quarter note
-		{46, 1/4}, -- F#4/Gb4 quarter note
-		{44, 1/4}, -- E4 quarter note
-		{44, 1/4}, -- E4 quarter note
-		{42, 1/4}, -- D4 quarter note
-		{42, 1/4}, -- D4 quarter note
-		{40, 1/2}, -- C4 half note	
-		{47, 1/4}, -- G4 quarter note
-		{47, 1/4}, -- G4 quarter note
-		{46, 1/4}, -- F#4/Gb4 quarter note
-		{46, 1/4}, -- F#4/Gb4 quarter note
-		{44, 1/2}, -- E4 half note	
-		{47, 1/4}, -- G4 quarter note
-		{47, 1/4}, -- G4 quarter note
-		{46, 1/4}, -- F#4/Gb4 quarter note
-		{46, 1/4}, -- F#4/Gb4 quarter note
-		{44, 1/2} -- E4 half note	
-	}
-	local Odetojoy = {
-		-- Each entry is a table with two values: the note number and the note length
-		-- The note number is the index of the NoteMap table, which corresponds to a key on the piano
-		-- The note length is a fraction of a whole note, such as 1/4 for a quarter note or 1/8 for an eighth note
-		{40, 1/4}, -- C4 quarter note
-		{42, 1/4}, -- D4 quarter note
-		{44, 1/4}, -- E4 quarter note
-		{42, 1/4}, -- D4 quarter note
-		{40, 1/4}, -- C4 quarter note
-		{39, 1/4}, -- B3 quarter note
-		{37, 1/4}, -- A3 quarter note
-		{37, 1/2}, -- A3 half note
-		{42, 1/4}, -- D4 quarter note
-		{42, 1/4}, -- D4 quarter note
-		{40, 1/4}, -- C4 quarter note
-		{39, 1/4}, -- B3 quarter note
-		{37, 1/2}, -- A3 half note	
-		{40, 1/4}, -- C4 quarter note
-		{44, 1/4}, -- E4 quarter note
-		{47, 1/8}, -- G4 eighth note
-		{47, 1/8}, -- G4 eighth note
-		{46, 1/8}, -- F#4/Gb4 eighth note
-		{46, 1/8}, -- F#4/Gb4 eighth note
-		{44, 1/8}, -- E4 eighth note
-		{44, 1/8}, -- E4 eighth note
-		{42, 1/8}, -- D4 eighth note
-		{42, 1/8}, -- D4 eighth note
-		{40, 1/2} -- C4 half note	
-	}
-	
-	-- Create a Frame
-
-local NoteMap = {
-	[1] = "A0",
-	[2] = "A#0/Bb0",
-	[3] = "B0",
-	[4] = "C1",
-	[5] = "C#1/Db1",
-	[6] = "D1",
-	[7] = "D#1/Eb1",
-	[8] = "E1",
-	[9] = "F1",
-	[10] = "F#1/Gb1",
-	[11] = "G1",
-	[12] = "G#1/Ab1",
-	[13] = "A1",
-	[14] = "A#1/Bb1",
-	[15] = "B1",
-	[16] = "C2",
-	[17] = "C#2/Db2",
-	[18] = "D2",
-	[19] = "D#2/Eb2",
-	[20] = "E2",
-	[21] = "F2",
-	[22] = "F#2/Gb2",
-	[23] = "G2",
-	[24] = "G#2/Ab2",
-	[25] = "A2",
-	[26] = "A#2/Bb2",
-	[27] = "B2",
-	[28] = "C3",
-	[29] = "C#3/Db3",
-	[30] = "D3",
-	[31] = "D#3/Eb3",
-	[32] = "E3",
-	[33] = "F3",
-	[34] = "F#3/Gb3",
-	[35] = "G3",
-	[36] = "G#3/Ab3",
-	[37] = "A3",
-	[38] = "A#3/Bb3",
-	[39] = "B3",
-	[40] = "C4", -- middle C
-	[41] = "C#4/Db4",
-	[42] = "D4",
-	[43] = "D#4/Eb4",
-	[44] = "E4",
-	[45] = "F4",
-	[46] = "F#4/Gb4",
-	[47] = "G4",
-	[48] = "G#4/Ab4",
-	[49] = "A4", -- 440 Hz
-	[50] = "A#4/Bb4",
-	[51] = "B4",
-	[52] = "C5",
-	[53] = "C#5/Db5",
-	[54] = "D5",
-	[55] = "D#5/Eb5",
-	[56] = "E5"
-}
-local inpdeb= (1/64)	
-
-mouse = game.Players.LocalPlayer:GetMouse()
-local KeyMap = {
-	-- The first row of keys on the keyboard, from ` to =
-	[1] = "`",
-	[2] = "1",
-	[3] = "2",
-	[4] = "3",
-	[5] = "4",
-	[6] = "5",
-	[7] = "6",
-	[8] = "7",
-	[9] = "8",
-	[10] = "9",
-	[11] = "0",
-	[12] = "-",
-	[13] = "=",
-
-	-- The second row of keys on the keyboard, from q to ]
-	[14] = "q",
-	[15] = "w",
-	[16] = "e",
-	[17] = "r",
-	[18] = "t",
-	[19] = "y",
-	[20] = "u",
-	[21] = "i",
-	[22] = "o",
-	[23] = "p",
-	[24] = "[",
-	[25] = "]",
-
-	-- The third row of keys on the keyboard, from a to '
-	[26] = "a",
-	[27] = "s",
-	[28] = "d",
-	[29] = "f",
-	[30] = "g",
-	[31] = "h",
-	[32] = "j",
-	[33] = "k",
-	[34] = "l",
-	[35] = ";",
-	[36] = "'",
-
-	-- The fourth row of keys on the keyboard, from z to /
-	[37] = "z",
-	[38] = "x",
-	[39] = "c",
-	[40] = "v",
-	[41] = "b",
-	[42] = "n",
-	[43] = "m", 
-	[44] =",", 
-	[45]=".", 
-	[46]= "/",
-
-	-- The fifth row of keys on the keyboard, from space to right shift
-	[47]= " ",
-	[48]= "<",
-	[49]= "^", -- left arrow
-	[50]= ">", -- up arrow
-	--[51]= ">" -- right arrow
-}
-	-- Define some variables for the piano logic
-	local KeyCount = 56 -- the number of keys on the piano
-	local KeyWidth = 21/12 / KeyCount -- the width of each key relative to the frame width
-	local KeyColors = {Color3.new(1, 1, 1), Color3.new(0, 0, 0)} -- the colors of the keys (white and black)
-	local KeyPattern = {1, 2, 1, 2, 1, 1, 2, 1, 2, 1, 2, 1} -- the pattern of the keys (white and black)
-	local KeyIndex = 1 -- the index of the current key in the pattern
-	-- the pitch multiplier for each semitone
-	local zindexc=1
-	-- Define the base pitch and the pitch step variables
-	local BasePitch = .1 -- the base pi
-	if experimental==true then
-		function TweenSound(guSound)
-			spawn(function()	
-				local guSound=guSound
-				local prevv=guSound.Volume
-				local delays2
-				local delays	
-				--guSound.Volume=0
-				guSound.Volume=0
-				local goal = {}
-
-				goal.Volume =  1+(mathrandom(1,10)/100)
-				--goal.PlaybackSpeed=0
-				local tweenInfo = TweenInfo.new(guSound.TimeLength*.005*mathrandom(1,5))
-				local tween = TweenService:Create(guSound, tweenInfo, goal)
-				tween:Play()
-				guSound:Play() 
-				tween.Completed:Wait()
-				task.wait(guSound.TimeLength*(.75*(mathrandom(1,4)/4)))
-				local TweenService = game:GetService("TweenService")
-				local goal = {}
-				goal.Volume =  0
-				--goal.PlaybackSpeed=0
-				local tweenInfo = TweenInfo.new(guSound.TimeLength*.25)
-				local tween = TweenService:Create(guSound, tweenInfo, goal)
-				--tween:Play() 
-				tween.Completed:Wait()
-				guSound:Destroy()
-			end)
-		end
-		function PlaySound(input)
-	-- Get the key that was clicked or touched
-spawn(function()	
-	local Key = input.Name -- input name is a number that represents its position on the piano.
-
-	-- Get the sound of the key
-	local Sound = input:FindFirstChild("Sound"):Clone()
-	Sound.Parent=input
-
-	-- If there is a sound, play it with some random variations
-	if Sound then
-		Sound.PlaybackSpeed = 0 + (Key/28)-(mathrandom(1,10)/100)
-		Sound.Pitch = 0 + (Key/28)+(mathrandom(1,3)/100) -- set the pitch according to the key index
-
-		--Sound.Pitch = BasePitch *  Key + 1 -- vary the pitch slightly
-		--Sound.PlaybackSpeed = mathrandom(100, 110) / 100 -- vary the playback speed slightly
-		--Sound.Volume = mathrandom(Sound.Volume * 70, Sound.Volume * 80) / 100 -- vary the volume slightly
-	-- play the sound
-		TweenSound(Sound)
-			
-	end
-			end)
-
---	Key.BackgroundColor3 = Key.BackgroundColor3:Lerp(Color3.new(0.5, 0.5, 0.5), 0.2)
-		end
-	else 
-		function TweenSound(guSound)
-			spawn(function()	
-				local guSound=guSound
-				local prevv=guSound.Volume
-				local delays2
-				local delays	
-				--guSound.Volume=0
-				guSound.Volume=0
-				local goal = {}
-
-				goal.Volume =  1+(mathrandom(1,10)/100)
-				--goal.PlaybackSpeed=0
-				local tweenInfo = TweenInfo.new(guSound.TimeLength*.005*mathrandom(1,5))
-				local tween = TweenService:Create(guSound, tweenInfo, goal)
-				tween:Play()
-				guSound:Play() 
-				tween.Completed:Wait()
-				task.wait(guSound.TimeLength*(.75*(mathrandom(1,4)/4)))
-				local TweenService = game:GetService("TweenService")
-				local goal = {}
-				goal.Volume =  0
-				--goal.PlaybackSpeed=0
-				local tweenInfo = TweenInfo.new(guSound.TimeLength*.25)
-				local tween = TweenService:Create(guSound, tweenInfo, goal)
-				--tween:Play() 
-				tween.Completed:Wait()
-				--guSound:Destroy()
-			end)
-		end
-		function PlaySound(input,origcolor)
-			-- Get the key that was clicked or touched
-			spawn(function()	
-				local Key = input.Name -- input name is a number that represents its position on the piano.
-				--if Key.BackgroundColor3=
-				--- Get the sound of the key
-				local Sound = input:FindFirstChild("Sound"):Clone()
-				Sound.Parent=input
-
-				-- If there is a sound, play it with some random variations
-				if Sound then
-					Sound.PlaybackSpeed = 1 - ((Key-1)/56)-(mathrandom(1,(Key-1)/8)/100)
-					if origcolor~=Color3.new(0,0,0) then
-						--and (Key*1)<=28 then
-					Sound.Pitch = 0 + ((Key-1)/28)+(mathrandom(1,3)/100)*1.059463 -- set the pitch according to the key index
-					--elseif origcolor~=Color3.new(0,0,0) and (Key*1)>28 then
-
-					--	Sound.Pitch = 0.1 + ((Key+1)/28)+(mathrandom(1,5)/100)*1.059463 
-					
-					elseif (Key*1)>28 then 
-						Sound.Pitch = 0 + ((Key-1)/28)-(mathrandom(1,3)/100)*1.059463
-							--*1.059463 -- set the pitch according to the key index
-					elseif (Key*1)<=28 then 
-						Sound.Pitch = 0 + ((Key-1)/28)-(mathrandom(1,3)/100)*1.059463 -- set the pitch according to the key index
-
-					end	
-						--Sound.Pitch=2.8
-					--Sound.Pitch = BasePitch *  Key + 1 -- vary the pitch slightly
-					--Sound.PlaybackSpeed = mathrandom(100, 110) / 100 -- vary the playback speed slightly
-					--Sound.Volume = mathrandom(Sound.Volume * 70, Sound.Volume * 80) / 100 -- vary the volume slightly
-					-- play the sound
-					TweenSound(Sound)
-
-				end
-			end)
-
-			--	Key.BackgroundColor3 = Key.BackgroundColor3:Lerp(Color3.new(0.5, 0.5, 0.5), 0.2)
-		end		
-
-		local function CreateKey(key)
-			-- Create a TextButton
-			local Key = Instance.new("TextButton")
-			Key.Parent = Frame
-			zindexc=zindexc+1
-			if KeyPattern[KeyIndex2]==2 then
-				Key.Size = UDim2.new(KeyWidth/1.4, 0, .7, 0) -- adjust the size as you like
-				Key.Position = UDim2.new((KeyIndex - 1) * KeyWidth, 0, 0, 0) -- place it next to the previous key
-				KeyIndex=KeyIndex-1	
-				Key.ZIndex=zindexc+3
-			else
-				Key.Size = UDim2.new(KeyWidth, 0, 1, 0) -- adjust the size as you like
-				Key.Position = UDim2.new((KeyIndex - 1) * KeyWidth, 0, 0, 0) -- place it next to the previous key
-				Key.ZIndex=zindexc
-			end	
-			Key.BackgroundColor3 = KeyColors[KeyPattern[KeyIndex2]] -- set the color according to the pattern
-			Key.Text = "" -- no text
-			Key.Name = KeyIndex3 -- name the key
-
-			-- Create a Sound
-			local Sound 
-			if KeyIndex3<28 then Sound=script.Piano:Clone()
-			else Sound=script.Piano:Clone()
-			end
-			Sound.Name="Piano"
-			Sound.Parent = Key
-			--Sound.SoundId = "rbxassetid://123456789" -- replace with your sound sample id
-			--Sound.PlaybackSpeed=length
-			--	Sound.Pitch = BasePitch * math.pow(PitchStep, KeyIndex3 - 1) -- set the pitch according to the key index
-			Sound.Name = "Sound" -- name the sound
-
-			-- Return the key
-			return Key
-		end
-	
--- Define a variable to store the time signature
-
-musicspeed=1
-	
-			-- The rest of the song is omitted for brevity
-		
-function PlayerPiano2(SheetMusic)
-spawn(function()			
-			local Length
-			while true do
-		for c = 1, #SheetMusic do
-			
-			for i = 1, #SheetMusic[c] do
-
-			-- Get the current note and its length from the sheet music table
-			local Note = SheetMusic[c][i][1]
-			Length = SheetMusic[c][i][2]
-
-			-- Get the key and the sound that correspond to the note from the keys table and the notemap table
-			local Key = ScreenGui.Piano:FindFirstChild(Note)
-			--local Sound = Key.Sound
-
-			-- Highlight the key by changing its color slightly
-
-			PlaySound(Key,Length*20)
-
-			-- Wait for the duration of the note in seconds
-			--task.wait(MeasureDuration * Length*20)
-			end
-			task.wait(MeasureDuration*20/8)--waits for the longest note of each moment to complete before going to next
-		end 
-				end
-	end)			
+        if Sound then
+            Sound.PlaybackSpeed = 1 -- Vitesse de lecture
+            Sound.Pitch = 1 -- Hauteur
+            Sound:Play() -- Joue le son
+        end
+    end)
 end
--- Loop through the sheet music and play each note one by one
 
-function PlayerPiano(SheetMusic)
-while true do
-for i = 1, #SheetMusic do
+-- Fonction pour créer une touche
+local function CreateKey(keyIndex)
+    local Key = Instance.new("TextButton")
+    Key.Parent = Frame
+    Key.Size = UDim2.new(KeyWidth, 0, 1, 0) -- Ajustez la taille comme vous le souhaitez
+    Key.Position = UDim2.new((keyIndex - 1) * KeyWidth, 0, 0, 0) -- Positionne à côté de la touche précédente
+    Key.BackgroundColor3 = KeyColors[KeyPattern[keyIndex]] -- Définit la couleur selon le motif
+    Key.Text = "" -- Pas de texte
+    Key.Name = keyIndex -- Nomme la touche
 
-	-- Get the current note and its length from the sheet music table
-	local Note = SheetMusic[i][1]
-	local Length = SheetMusic[i][2]
+    -- Crée un son
+    local Sound = Instance.new("Sound") -- Crée un objet son
+    Sound.Name = "Sound"
+    Sound.SoundId = "rbxassetid://330882505" -- Utilise l'ID que vous avez fourni
+    Sound.Parent = Key
 
-	-- Get the key and the sound that correspond to the note from the keys table and the notemap table
-	local Key = ScreenGui.Piano:FindFirstChild(Note)
-	local Sound = Key.Sound
+    -- Événements pour les interactions tactiles
+    Key.TouchTap:Connect(function()
+        PlaySound(Key)
+        Key.BackgroundColor3 = Color3.new(0.5, 0.5, 0.5) -- Change la couleur lors de la pression
+        wait(0.1)
+        Key.BackgroundColor3 = Key.BackgroundColor3:Lerp(KeyColors[KeyPattern[keyIndex]], 0.5) -- Rétablir la couleur
+    end)
 
-	-- Highlight the key by changing its color slightly
+    return Key
+end
 
-	PlaySound(Key,Length*20)
+-- Création des touches
+for i = 1, KeyCount do
+    CreateKey(i)
+end
 
-	-- Wait for the duration of the note in seconds
-	task.wait(MeasureDuration * Length*20)
+-- Définir plusieurs morceaux de musique
+local MusicCollection = {}
 
-	end 
-	end
-	end
-	
-	 KeyIndex=1
-	 KeyIndex2=1
-	 KeyIndex3=1
-	
-	for i = 1, KeyCount do
-		local Key = CreateKey()
-		local origcolor=Key.BackgroundColor3
-		local keydeb=false
-		local function connectkey()
-			if keydeb==false then
-				keydeb=true	
-					Key.BackgroundColor3 = Key.BackgroundColor3:Lerp(Color3.new(0.5, 0.5, 0.5), 0.2) 
+-- Ajouter la musique "Lilium" avec l'ID de son
+MusicCollection[1] = {
+    -- Simplification de la mélodie
+    -- Mesures de Lilium
+    {{40, 1/4}, {42, 1/4}, {44, 1/4}, {42, 1/4}}, -- Mesure 1
+    {{40, 1/4}, {42, 1/4}, {44, 1/4}, {42, 1/4}}, -- Mesure 2
+    {{40, 1/4}, {39, 1/4}, {40, 1/4}, {39, 1/4}}, -- Mesure 3
+    {{40, 1/2}}, -- Mesure 4
+    -- Ajoutez d'autres mesures pour compléter le morceau
+}
 
-				PlaySound(Key,origcolor)	task.wait(.1) Key.BackgroundColor3 = origcolor
-				task.wait(inpdeb)
-				keydeb=false	
-			end
-		end
-		Key.MouseButton1Click:Connect(connectkey)
-		Key.TouchTap:Connect(connectkey)
-		local KeyID=KeyIndex3
-		mouse.KeyDown:connect(function (key) -- Run function
-		
+-- Fonction pour jouer un morceau aléatoire
+local function PlayRandomMusic()
+    local randomIndex = math.random(1, #MusicCollection) -- Choisir un morceau aléatoire
+    local sheetMusic = MusicCollection[randomIndex]
 
-				local boardkey = tostring(string.lower(key))
-				--print(boardkey,KeyMap[KeyID])
-				if (boardkey) == tostring(KeyMap[KeyID]) then
-					keydeb=true	
-					Key.BackgroundColor3 = Key.BackgroundColor3:Lerp(Color3.new(0.5, 0.5, 0.5), 0.2) 
-					PlaySound(Key)	task.wait(.1) Key.BackgroundColor3 = origcolor
-					task.wait(inpdeb)
-					keydeb=false	
-				end		
-			
-		end)
-		KeyIndex3=KeyIndex3+1
-		KeyIndex2=KeyIndex2+1
-		KeyIndex=KeyIndex+1
-		if KeyIndex2 > #KeyPattern then
-			KeyIndex2 = 1
-		end
+    -- Jouer la musique choisie
+    for i = 1, #sheetMusic do
+        for j = 1, #sheetMusic[i] do
+            local Note = sheetMusic[i][j][1]
+            local Length = sheetMusic[i][j][2]
 
-	end
-	
-	end
-	local	FurElise2 = {
-		{{56, 1/8}, {32, 1/8}, {39, 1/8}, {44, 1/8}}, {{55, 1/8}}, {{56, 1/8}}, {{55, 1/8}}, {{56, 1/8}, {32, 1/8}, {39, 1/8}, {44, 1/8}}, {{49, 1/8}}, {{52, 1/8}}, {{44, 1/4}, {28, 1/4}},
-		{{47, 1/8}}, {{40, 1/4}, {25, 1/4}}, {{44, 1/8}}, {{32, 1/4}, {20, 1/4}}, {{35, 1/8}}, {{28, 3/8}, {16, 3/8}},
-		{{56, 1/8}, {32, 1/8}, {39, 1/8}, {44, 1/8}}, {{55, 1/8}}, {{56, 1/8}}, {{55, 1/8}}, {{56, 1/8}, {32, 1/8}, {39, 1/8}, {44, 1/8}}, {{49, 1/8}}, {{52, 1/8}}, {{44, 1/4}, {28, 3/16}},
-		{{47 ,3 /16}, {40 ,3 /16}, {44 ,3 /16}},
-		{{46 ,3 /16}, {39 ,3 /16}, {43 ,3 /16}},
-		{{45 ,3 /16}, {38 ,3 /16}, {42 ,3 /16}},
-		{{44 ,3 /16}, {37 ,3 /16}, {41 ,3 /16}},
-		{{43 ,3 /16}, {36 ,3 /16}, {40 ,3 /16}},
-		{{42 ,3 /16}, {35 ,3 /16}, {39 ,3 /16}},
-		{{41 ,5 /32}, {34 ,5 /32}, {38 ,5 /32}},
-		{{40 ,5 /32}, {33 ,5 /32}, {37 ,5 /32}},
-		{{39 ,5 /32}, {32 ,5 /32}, {36 ,5 /32}},
-		{{38 ,5 /32}, {31 ,5 /32}, {35 ,5 /32}},
-		{{37 ,5 /32}, {30 ,5 /32}, {34 ,5 /32}},
-		{{36 ,5 /32}, {29 ,5 /32}, {33 ,5 /32}},
-		{{35 ,7 /64}, {28 ,7 /64}},
-		{{36 ,7 /64}, {29 ,7 /64}},
-		{{37 ,7 /64}, {30 ,7 /64}},
-		{{38 ,7 /64}, {31 ,7 /64}},
-		{{39 ,7 /64}, {32 ,7 /64}},
-		{{40 ,7 /64}, {33 ,7 /64}},
-		{{41 ,7 /64}, {34 ,7 /64}},
-		{{42 ,7 /64}, {35 ,7 /64}},
-		{{43 ,7 /64}, {36 ,7 /64}},
-		{{44 ,7 /64}, {37 ,7 /64}},
-		{{45 ,7 /64}, {38 ,7 /64}},
-		{{46 ,7 /64}, {39 ,7 /64}},
-		{{47 ,7 /64}, {40 ,7 /64}},
-		{{48 ,7 /64}, {41 ,7 /64}},
-		{{49 ,7 /64}, {42 ,7 /64}},
-		{{50 ,7 /64}, {43 ,7 /64}},
-		{{51 ,7 /64}, {44 ,7 /64}},
-		{{52 ,7 /64}, {45 ,7 /64}},
-		{{53 ,7 /64}, {46 ,7 /64}},
-		{{54 ,7 /64}, {47 ,7 /64}},
-		{{55 ,1/8}, {48, 1/8}}, {{56, 1/8}}, {{55, 1/8}}, {{56, 1/8}, {32, 1/8}, {39, 1/8}, {44, 1/8}}, {{49, 1/8}}, {{52, 1/8}}, {{44, 1/4}, {28, 1/4}},
-		{{47, 1/8}}, {{40, 1/4}, {25, 1/4}}, {{44, 1/8}}, {{32, 1/4}, {20, 1/4}}, {{35, 1/8}}, {{28, 3/8}, {16, 3/8}},
-		{{56, 1/8}, {32, 1/8}, {39, 1/8}, {44, 1/8}}, {{55, 1/8}}, {{56, 1/8}}, {{55, 1/8}}, {{56, 1/8}, {32, 1/8}, {39, 1/8}, {44, 1/8}}, {{49, 1/8}}, {{52, 1/8}}, {{44 ,3 /16}, {28 ,3 /16}},
-		{{47 ,3 /16}, {40 ,3 /16}, {44 ,3 /16}},
-		{{46 ,3 /16}, {39 ,3 /16}, {43 ,3 /16}},
-		{{45 ,3 /16}, {38 ,3 /16}, {42 ,3 /16}},
-		{{44 ,3 /16}, {37 ,3 /16}, {41 ,3 /16}},
-		{{43 ,3 /16}, {36 ,3 /16}, {40 ,3 /16}},
-		{{42 ,3 /16}, {35 ,3 /16}, {39 ,3 /16}},
-		{{41 ,5 /32}, {34 ,5 /32}, {38 ,5 /32}},
-		{{43 ,3 /16}, {36 ,3 /16}, {40 ,3 /16}},
-		{{46 ,3 /16}, {39 ,3 /16}, {43 ,3 /16}},
-		{{45 ,3 /16}, {38 ,3 /16}, {42 ,3 /16}},
-		{{44 ,3 /16}, {37 ,3 /16}, {41 ,3 /16}},
-		{{43 ,3 /16}, {36 ,3 /16}, {40 ,3 /16}},
-		{{42 ,3 /16}, {35 ,3 /16}, {39 ,3 /16}},
-{{41 ,5 /32}, {34 ,5 /32}, {38 ,5 /32}},
-{{40 ,5 /32}, {33 ,5 /32}, {37 ,5 /32}},
-{{39 ,5 /32}, {32 ,5 /32}, {36 ,5 /32}},
-{{38 ,5 /32}, {31 ,5 /32}, {35 ,5 /32}},
-{{37 ,5 /32}, {30 ,5 /32}, {34 ,5 /32}},
-{{36 ,5 /32}, {29 ,5 /32}, {33 ,5 /32}},
-{{35, 1/8}, {28, 1/8}}, {{36, 1/8}}, {{37, 1/8}}, {{38, 1/8}}, {{39, 1/8}}, {{40, 1/8}}, {{41, 1/8}}, {{42, 1/8}},
-{{43, 1/8}}, {{44, 1/8}}, {{45, 1/8}}, {{46, 1/8}}, {{47, 1/8}}, {{48, 1/8}}, {{49, 1/8}}, {{50, 1/8}},
-{{51, 1/4}, {44, 1/4}}, {{52, 1/4}, {45, 1/4}}, {{53, 1/4}, {46, 1/4}}, {{54, 1/4}, {47, 1/4}},
-{{55, 3/16}, {48, 3/16}}, {{56, 3/16}, {49, 3/16}}, {{57, 3/16}, {50, 3/16}}, {{58, 3/16}, {51, 3/16}},
-{{59, 3/16}, {52, 3/16}}, {{60, 3/16}, {53, 3/16}}, {{61, 3/16}, {54, 3/16}}, {{62, 3/16}, {55, 3/16}},
-{{63, 7/64}, {56,7 /64}},
-{{64 ,7 /64}, {57 ,7 /64}},
-{{65 ,7 /64}, {58 ,7 /64}},
-		{{66 ,7 /64}, {59 ,7 /64}},	
-		{{42 ,3 /16}, {35 ,3 /16}, {39 ,3 /16}},
-		{{41 ,5 /32}, {34 ,5 /32}, {38 ,5 /32}},
-		{{40 ,5 /32}, {33 ,5 /32}, {37 ,5 /32}},
-		{{39 ,5 /32}, {32 ,5 /32}, {36 ,5 /32}},
-		{{38 ,5 /32}, {31 ,5 /32}, {35 ,5 /32}},
-		{{37 ,5 /32}, {30 ,5 /32}, {34 ,5 /32}},
-		{{36 ,5 /32}, {29 ,5 /32}, {33 ,5 /32}},
-		{{35, 1/8}, {28, 1/8}}, {{36, 1/8}}, {{37, 1/8}}, {{38, 1/8}}, {{39, 1/8}}, {{40, 1/8}}, {{41, 1/8}}, {{42, 1/8}},
-		{{43, 1/8}}, {{44, 1/8}}, {{45, 1/8}}, {{46, 1/8}}, {{47, 1/8}}, {{48, 1/8}}, {{49, 1/8}}, {{50, 1/8}},
-		{{51, 1/4}, {44, 1/4}}, {{52, 1/4}, {45, 1/4}}, {{53, 1/4}, {46, 1/4}}, {{54, 1/4}, {47, 1/4}},
-		{{55, 3/16}, {48, 3/16}}, {{56, 3/16}, {49, 3/16}}, {{57, 3/16}, {50, 3/16}}, {{58, 3/16}, {51, 3/16}},
-		{{59, 3/16}, {52, 3/16}}, {{60, 3/16}, {53, 3/16}}, {{61, 3/16}, {54, 3/16}}, {{62, 3/16}, {55, 3/16}},
-		{{63, 7/64}, {56,7 /64}},
-		{{64 ,7 /64}, {57 ,7 /64}},
-		{{65 ,7 /64}, {58 ,7 /64}},
-		{{66 ,7 /64}, {59 ,7 /64}},
-		{{67 ,7 /64}, {60 ,7 /64}},
-		{{68 ,7 /64}, {61 ,7 /64}},
-		{{69 ,7 /64}, {62 ,7 /64}},
-		{{70 ,7 /64}, {63 ,7 /64}},
-		{{71 ,1/8}, {64, 1/8}}, {{72, 1/8}}, {{71, 1/8}}, {{72, 1/8}, {48, 1/8}, {55, 1/8}, {60, 1/8}}, {{65, 1/8}}, {{68, 1/8}}, {{60, 1/4}, {44, 1/4}},
-		{{63, 1/8}}, {{56, 1/4}, {41, 1/4}}, {{60, 1/8}}, {{48, 1/4}, {36, 1/4}}, {{51, 1/8}}, {{44, 3/8}, {32, 3/8}},
-		{{72, 1/8}, {48, 1/8}, {55, 1/8}, {60, 1/8}}, {{71, 1/8}}, {{72, 1/8}}, {{71, 1/8}}, {{72, 1/8}, {48, 1/8}, {55, 1/8}, {60, 1/8}}, {{65, 1/8}}, {{68, 1/8}}, {{60 ,3 /16}, {44 ,3 /16}},
-		{{63 ,3 /16}, {56 ,3 /16}, {60 ,3 /16}},
-		{{62 ,3 /16}, {55 ,3 /16}, {59 ,3 /16}},
-		{{61 ,3 /16}, {54 ,3 /16}, {58 ,3 /16}},
-		{{60 ,3 /16}, {53 ,3 /16}, {57 ,3 /16}},
-		{{59 ,3 /16}, {52 ,3 /16}, {56 ,3 /16}},
-		{{58 ,5 /32}, {51 ,5 /32}, {55 ,5 /32}},
-		{{57 ,5 /32}, {50 ,5 /32}, {54 ,5 /32}},
-		{{56 ,5 /32}, {49 ,5 /32}, {53 ,5 /32}},
-		{{55 ,5 /32}, {48 ,5 /32}, {52 ,5 /32}},
-		{{54 ,5 /32}, {47 ,5 /32}, {51 ,5 /32}},
-		{{53, 1/8}, {46, 1/8}}, {{54, 1/8}}, {{55, 1/8}}, {{56, 1/8}}, {{57, 1/8}}, {{58, 1/8}}, {{59, 1/8}}, {{60, 1/8}},
-		{{61, 1/8}}, {{62, 1/8}}, {{63, 1/8}}, {{64, 1/8}}, {{65, 1/8}}, {{66, 1/8}}, {{67, 1/8}}, {{68, 1/8}},
-		{{69, 1/4}, {62, 1/4}}, {{70, 1/4}, {63, 1/4}}, {{71, 1/4}, {64, 1/4}}, {{72, 1/4}, {65, 1/4}},
-		{{73, 3/16}, {66, 3/16}}, {{74, 3/16}, {67, 3/16}}, {{75, 3/16}, {68, 3/16}}, {{76, 3/16}, {69, 3/16}},
-		{{77, 7/64}, {70 ,7 /64}},
-		{{78 ,7 /64}, {71 ,7 /64}},
-		{{79 ,7 /64}, {72 ,7 /64}},
-		{{80 ,7 /64}, {73 ,7 /64}},
-		{{81 ,7 /64}, {74 ,7 /64}},
-		{{82 ,7 /64}, {75 ,7 /64}},
-		{{83 ,7 /64}, {76 ,7 /64}},
-		{{84 ,1/8}, {77, 1/8}}, {{85, 1/8}}, {{84, 1/8}}, {{85, 1/8}, {61, 1/8}, {68, 1/8}, {73, 1/8}}, {{78, 1/8}}, {{81, 1/8}}, {{73, 1/4}, {57, 1/4}},
-		{{76, 1/8}}, {{69, 1/4}, {54, 1/4}}, {{73, 1/8}}, {{61, 1/4}, {49, 1/4}}, {{64, 1/8}}, {{57, 3/8}, {45, 3/8}},
-		{{85, 1/8}, {61, 1/8}, {68, 1/8}, {73, 1/8}}, {{84, 1/8}}, {{85, 1/8}}, {{84, 1/8}}, {{85, 1/8}, {61, 1/8}, {68, 1/8}, {73, 1/8}}, {{78, 1/8}}, {{81, 1/8}}, {{73 ,3 /16}, {57 ,3 /16}},
-		{{76 ,3 /16}, {69 ,3 /16}, {73 ,3 /16}},
-		{{75 ,3 /16}, {68 ,3 /16}, {72 ,3 /16}},
-	}
-PlayerPiano2(FurElise2)
+            local Key = Frame:FindFirstChild(Note)
+            if Key then
+                PlaySound(Key)
+                wait(Length * 0.5) -- Attendre la durée de la note
+            end
+        end
+    end
+end
+
+-- Démarrer la lecture de musique aléatoire
+PlayRandomMusic()
